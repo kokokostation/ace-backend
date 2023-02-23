@@ -21,13 +21,14 @@ async def init_app():
         ]
     )
 
-    cors = aiohttp_cors.setup(app, defaults={
-        'http://localhost:3000': aiohttp_cors.ResourceOptions(
-            allow_credentials=True,
-            expose_headers="*",
-            allow_headers="*"
-        )
-    })
+    cors = aiohttp_cors.setup(
+        app,
+        defaults={
+            'http://localhost:3000': aiohttp_cors.ResourceOptions(
+                allow_credentials=True, expose_headers="*", allow_headers="*"
+            )
+        },
+    )
 
     for route in list(app.router.routes()):
         cors.add(route)

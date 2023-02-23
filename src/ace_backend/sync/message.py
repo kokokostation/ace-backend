@@ -23,9 +23,7 @@ async def _fetch_messages(session: aiohttp.ClientSession, last: int) -> List[Dic
 
 
 async def _get_db_last(pool: asyncpg.Pool) -> int:
-    external_id = await pool.fetchval(
-        'SELECT MAX(external_id) FROM sync.message'
-    )
+    external_id = await pool.fetchval('SELECT MAX(external_id) FROM sync.message')
 
     return external_id or 0
 
