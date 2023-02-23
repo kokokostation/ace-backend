@@ -9,7 +9,7 @@ from ace_backend.lib import pg
 logging.basicConfig(level=logging.DEBUG)
 
 
-async def main() -> None:
+async def main_impl() -> None:
     pool = await pg.get_connection_pool()
 
     tasks = [message.sync_messages(pool)]
@@ -17,5 +17,9 @@ async def main() -> None:
     await asyncio.gather(*tasks)
 
 
+def main():
+    asyncio.run(main_impl())
+
+
 if __name__ == '__main__':
-    asyncio.run(main())
+    main()
