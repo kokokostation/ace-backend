@@ -93,6 +93,8 @@ async def _insert_messages(pool: asyncpg.Pool, messages: List[Dict]) -> None:
                     UNNEST($7::VARCHAR[]),
                     UNNEST($8::VARCHAR[])
                 )
+            ON CONFLICT (name) DO UPDATE
+                SET name = EXCLUDED.name 
             RETURNING id, name
         )
         INSERT INTO sync.message
@@ -125,25 +127,24 @@ async def _insert_messages(pool: asyncpg.Pool, messages: List[Dict]) -> None:
                 UNNEST($15::VARCHAR[]) AS picture_name
         ) AS m
             ON p.name = m.picture_name
+        ON CONFLICT DO NOTHING
     ''',
         *args,
     )
 
 
-async def _do_sync_iteration(
-    pool: asyncpg.Pool, session: aiohttp.ClientSession
-) -> None:
+async def do_sync(pool: asyncpg.Pool, session: aiohttp.ClientSession) -> None:
     last = await _get_db_last(pool)
     messages = await _fetch_messages(session, last)
     await _insert_messages(pool, messages)
 
 
 async def sync_messages(pool: asyncpg.Pool):
-    session = aiohttp.ClientSession(raise_for_status=True)
-    while True:
-        try:
-            await _do_sync_iteration(pool, session)
-        except Exception:
-            logger.exception('messages sync iteration failed')
+    async with aiohttp.ClientSession(raise_for_status=True) as session:
+        while True:
+            try:
+                await do_sync(pool, session)
+            except Exception:
+                logger.exception('messages sync iteration failed')
 
-        await asyncio.sleep(5)
+            await asyncio.sleep(5)

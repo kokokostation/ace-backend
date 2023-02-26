@@ -2,7 +2,10 @@ import dataclasses
 from typing import List
 from typing import Optional
 
+import aiohttp
 from aiohttp import web
+
+from ace_backend.sync import message as message_module
 
 
 @dataclasses.dataclass(frozen=True)
@@ -35,6 +38,12 @@ class Response:
 
 async def handle(request: web.Request) -> web.Response:
     last = int(request.query['last'])
+    force_sync = bool(request.query.get('force_sync'))
+
+    if force_sync:
+        async with aiohttp.ClientSession(raise_for_status=True) as session:
+            await message_module.do_sync(request.app['pool'], session)
+
     rows = await request.app['pool'].fetch(
         '''
         SELECT 
