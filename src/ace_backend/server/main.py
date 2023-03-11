@@ -8,6 +8,8 @@ import aiohttp_session.redis_storage
 from ace_backend.lib import pg
 from ace_backend.lib import redis
 from ace_backend.server.handlers import v1_message_list_get
+from ace_backend.server.handlers import v1_message_post
+from ace_backend.server.handlers import v1_whoami_get
 
 
 logging.basicConfig(level=logging.DEBUG)
@@ -21,6 +23,8 @@ async def init_app():
     app.add_routes(
         [
             web.get('/v1/message/list', v1_message_list_get.handle),
+            web.post('/v1/message', v1_message_post.handle),
+            web.get('/v1/whoami', v1_whoami_get.handle),
         ]
     )
 
