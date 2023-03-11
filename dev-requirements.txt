@@ -6,3 +6,4 @@ click==8.0.3
 types-urllib3
 types-requests
 types-pytz
+types-redis

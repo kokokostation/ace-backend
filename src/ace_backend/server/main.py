@@ -2,8 +2,11 @@ import logging
 
 from aiohttp import web
 import aiohttp_cors
+import aiohttp_session
+import aiohttp_session.redis_storage
 
 from ace_backend.lib import pg
+from ace_backend.lib import redis
 from ace_backend.server.handlers import v1_message_list_get
 
 
@@ -32,6 +35,12 @@ async def init_app():
 
     for route in list(app.router.routes()):
         cors.add(route)
+
+    storage = aiohttp_session.redis_storage.RedisStorage(
+        await redis.get_connection(),
+        cookie_name='ace_session',
+    )
+    aiohttp_session.setup(app, storage)
 
     return app
 
