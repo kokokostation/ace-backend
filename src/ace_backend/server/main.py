@@ -47,6 +47,8 @@ async def init_app():
     storage = aiohttp_session.redis_storage.RedisStorage(
         await redis.get_connection(),
         cookie_name='ace_session',
+        max_age=86400 * 30,
+        secure=True,
     )
     aiohttp_session.setup(app, storage)
 
