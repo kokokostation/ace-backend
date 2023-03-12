@@ -75,7 +75,7 @@ async def _do_sync(request: web.Request, session: aiohttp_session.Session) -> No
         SELECT user_id
         FROM sync.message
         WHERE text = $1
-        ORDER BY time
+        ORDER BY external_id
         LIMIT 1
         ''',
         session['user_id_sync']['sync_message'],
