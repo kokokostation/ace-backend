@@ -1,5 +1,6 @@
 import logging
 
+import aiohttp
 from aiohttp import web
 import aiohttp_cors
 import aiohttp_session
@@ -19,6 +20,7 @@ async def init_app():
     app = web.Application()
 
     app['pool'] = await pg.get_connection_pool()
+    app['client_session'] = aiohttp.ClientSession(raise_for_status=True)
 
     app.add_routes(
         [

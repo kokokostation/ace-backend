@@ -41,8 +41,7 @@ async def handle(request: web.Request) -> web.Response:
     force_sync = bool(request.query.get('force_sync'))
 
     if force_sync:
-        async with aiohttp.ClientSession(raise_for_status=True) as session:
-            await message_module.do_sync(request.app['pool'], session)
+        await message_module.do_sync(request.app['pool'], request.app['client_session'])
 
     rows = await request.app['pool'].fetch(
         '''

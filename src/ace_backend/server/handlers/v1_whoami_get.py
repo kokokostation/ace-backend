@@ -69,8 +69,7 @@ async def _is_sync_needed(
 
 async def _do_sync(request: web.Request, session: aiohttp_session.Session) -> None:
     pg_pool = request.app['pool']
-    async with aiohttp.ClientSession(raise_for_status=True) as client_session:
-        await message_module.do_sync(pg_pool, client_session)
+    await message_module.do_sync(pg_pool, request.app['client_session'])
 
     user_id = await pg_pool.fetchval(
         '''
