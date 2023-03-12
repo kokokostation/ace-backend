@@ -3,7 +3,6 @@ import datetime as dt
 from typing import Optional
 import uuid
 
-import aiohttp
 from aiohttp import web
 import aiohttp_session
 

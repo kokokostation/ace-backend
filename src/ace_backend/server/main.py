@@ -10,6 +10,7 @@ from ace_backend.lib import pg
 from ace_backend.lib import redis
 from ace_backend.server.handlers import v1_message_list_get
 from ace_backend.server.handlers import v1_message_post
+from ace_backend.server.handlers import v1_topic_get
 from ace_backend.server.handlers import v1_whoami_get
 
 
@@ -27,6 +28,7 @@ async def init_app():
             web.get('/v1/message/list', v1_message_list_get.handle),
             web.post('/v1/message', v1_message_post.handle),
             web.get('/v1/whoami', v1_whoami_get.handle),
+            web.get('/v1/topic', v1_topic_get.handle),
         ]
     )
 
